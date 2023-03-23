@@ -60,15 +60,21 @@ class RSA {
     }
 
     fun calculate_e(d : Long , m: Long) : Long{
-        var e = 10L
+        var e = 3L
 
         while (true){
-            if((e*d) % m ==1L)
+            val ed = e*d
+            if((ed % m) ==1L)
                 break
             else
                 e++;
         }
         return e;
+    }
+
+    fun gcd(a: Long , b: Long): Long{
+        if(b == 0L) return a;
+        return gcd(b, a %b);
     }
 
     fun calculate_d(m: Long) : Long{

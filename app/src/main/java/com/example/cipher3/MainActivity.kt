@@ -11,51 +11,57 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val etP = findViewById<EditText>(R.id.etP);
-        val etQ = findViewById<EditText>(R.id.etQ);
-        val etD = findViewById<EditText>(R.id.etD);
-        val etN = findViewById<EditText>(R.id.etN);
-        val etCode = findViewById<EditText>(R.id.etCode);
-        val etDecode = findViewById<EditText>(R.id.etDecode);
+        val etP = findViewById<EditText>(R.id.etP)
+        val etQ = findViewById<EditText>(R.id.etQ)
+        val etD = findViewById<EditText>(R.id.etD)
+        val etN = findViewById<EditText>(R.id.etN)
+        val etE = findViewById<EditText>(R.id.etE)
+        val etCode = findViewById<EditText>(R.id.etCode)
+        val etDecode = findViewById<EditText>(R.id.etDecode)
+
 
         val btnCode = findViewById<Button>(R.id.code)
         val btnDecode = findViewById<Button>(R.id.decode)
 
         val rsa = RSA()
 
-        btnCode.setOnClickListener(View.OnClickListener {
+        btnCode.setOnClickListener {
             try {
                 val p = etP.text.toString().toInt() * 1L
                 val q = etQ.text.toString().toInt() * 1L
                 val s = etCode.text.toString()
 
-                val n = p * q;
-                val m = (p-1) * (q-1)
+                val n = p * q
+                val m = (p - 1) * (q - 1)
                 val d = rsa.calculate_d(m)
-                val e_ = rsa.calculate_e(d, m)
+                var e =3L
+                while(rsa.gcd(e , m) != 1L){
+                    e+=2
+                }
 
-                etDecode.setText(rsa.encode(s , e_ , n).joinToString(";"))
+                etDecode.setText(rsa.encode(s, e, n).joinToString(";"))
                 etD.setText(d.toString())
                 etN.setText(n.toString())
-            }catch (e : java.lang.Exception){
-
+                etE.setText(e.toString())
+            } catch (e: java.lang.Exception) {
+                println(e.toString())
             }
 
-        })
+        }
 
-        btnDecode.setOnClickListener(View.OnClickListener {
+        btnDecode.setOnClickListener {
             try {
                 val n = etN.text.toString().toInt() * 1L
                 val d = etD.text.toString().toInt() * 1L
                 val arrS = etDecode.text.toString().split(";")
 
 
-                val answer = rsa.decode(arrS , d , n)
+                val answer = rsa.decode(arrS, d, n)
                 etCode.setText(answer)
 
-            }catch (e : java.lang.Exception){
+            } catch (e: java.lang.Exception) {
                 e.stackTraceToString()
             }
-        })
+        }
     }
 }
